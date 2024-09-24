@@ -94,7 +94,6 @@ fun cardCharacter(character: Character, onCharacterClick: (Int) -> Unit) {
     }
 }
 
-// Composable to display the list of characters in a lazy column
 @Composable
 fun lazyCharacterList(navController: NavHostController) {
     val characters = CharacterDb().getAllCharacters()
@@ -106,13 +105,12 @@ fun lazyCharacterList(navController: NavHostController) {
     ) {
         items(characters) { character ->
             cardCharacter(character = character) { characterId ->
-                navController.navigate("characterDetail/$characterId") // Navigate to detail screen with character ID
+                navController.navigate("characterDetail/$characterId")
             }
         }
     }
 }
 
-// Main Composable for displaying the character list
 @Composable
 fun CharacterScreen(
     onCharacterClick: (Int) -> Unit,
