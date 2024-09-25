@@ -60,14 +60,13 @@ fun barTop() {
         })
 }
 
-// Composable to display an individual character item
 @Composable
 fun cardCharacter(character: Character, onCharacterClick: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onCharacterClick(character.id) }  // Handle click to navigate to details
+            .clickable { onCharacterClick(character.id) }
             .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -95,7 +94,7 @@ fun cardCharacter(character: Character, onCharacterClick: (Int) -> Unit) {
 }
 
 @Composable
-fun lazyCharacterList(navController: NavHostController) {
+fun lazyCharacterList(onCharacterClick: (Int) -> Unit) {
     val characters = CharacterDb().getAllCharacters()
 
     LazyColumn(
@@ -104,9 +103,7 @@ fun lazyCharacterList(navController: NavHostController) {
             .padding(8.dp)
     ) {
         items(characters) { character ->
-            cardCharacter(character = character) { characterId ->
-                navController.navigate("characterDetail/$characterId")
-            }
+            cardCharacter(character = character, onCharacterClick = onCharacterClick)
         }
     }
 }
@@ -124,7 +121,7 @@ fun CharacterScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(paddingValues)) {
-            lazyCharacterList(navController = rememberNavController())
+            lazyCharacterList(onCharacterClick = onCharacterClick)
         }
     }
 }

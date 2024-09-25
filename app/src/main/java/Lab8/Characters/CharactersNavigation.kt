@@ -12,7 +12,7 @@ data object CharacterDestination
 
 fun NavGraphBuilder.characterScreen(
     onCharacterClick: (Int) -> Unit,
-    onBackToLogin: () -> Unit // Callback para manejar el botón atrás
+    onBackToLogin: () -> Unit
 ) {
     composable<CharacterDestination> {
         CharacterRoute(
@@ -20,9 +20,9 @@ fun NavGraphBuilder.characterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Intercepta el botón "atrás" para cerrar la aplicación
+
         BackHandler {
-            onBackToLogin() // Llama a la función que cierra la aplicación
+            onBackToLogin()
         }
     }
 }

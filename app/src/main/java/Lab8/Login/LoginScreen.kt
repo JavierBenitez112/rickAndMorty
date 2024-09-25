@@ -35,7 +35,7 @@ fun LoginScreen(onLoginClick: () -> Unit, modifier: Modifier = Modifier) {
                 painter = painterResource(id = R.drawable.rick),
                 contentDescription = "Rick and Morty Logo"
             )
-            Button(onClick = { onLoginClick() }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = onLoginClick, modifier = Modifier.fillMaxWidth()) {
                 Text("Entrar")
             }
         }

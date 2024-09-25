@@ -1,6 +1,10 @@
 package com.example.rickandmorty
 
-import Lab8.CharacterDetails.characterDetailScreen
+
+import Lab8.CharacterDetails.DetailDestination
+import Lab8.CharacterDetails.DetailScreen
+
+import Lab8.CharacterDetails.navigateToCharacterDetailsScreen
 import Lab8.Characters.CharacterDestination
 import Lab8.Characters.LoginDestination
 import Lab8.Characters.characterScreen
@@ -15,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
-
+import android.util.Log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,17 +44,19 @@ class MainActivity : ComponentActivity() {
                         )
                         characterScreen(
                             onCharacterClick = { characterId ->
-                                navController.navigate("characterDetail/$characterId")
+                                navController.navigateToCharacterDetailsScreen(
+                                    destination = DetailDestination(
+                                        ID = characterId
+                                    )
+                                )
                             },
                             onBackToLogin = {
-                                finish()
+                                navController.navigate(LoginDestination) {
+                                    popUpTo(CharacterDestination) { inclusive = true }
+                                }
                             }
                         )
-                        characterDetailScreen(
-                            onNavigateBack = {
-                                navController.navigateUp()
-                            }
-                        )
+                        DetailScreen(navController = navController)
                     }
                 }
             }

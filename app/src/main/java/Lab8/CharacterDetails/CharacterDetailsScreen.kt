@@ -16,37 +16,34 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.rickandmorty.ui.theme.RickAndMortyTheme
+
 import Character
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.layout.ContentScale
 
-// Example CharacterDb instance for demo purposes
-val characterDb = CharacterDb()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterDetailRoute(
     characterId: Int,
-    onNavigateBack: () -> Unit
+    navController: NavHostController
 ) {
+    val character = CharacterDb().getCharacterById(characterId)
     CharacterDetailScreen(
-        characterId = characterId,
-        onBackClick = onNavigateBack
+        character = character,
+        onBackClick = { navController.navigateUp() }
+
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterDetailScreen(
-    characterId: Int,
+    character: Character,
     onBackClick: () -> Unit
 ) {
-    // Obtener el personaje usando el ID
-    val character = characterDb.getCharacterById(characterId)
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,7 +53,7 @@ fun CharacterDetailScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick }) {
+                    IconButton(onClick = { onBackClick() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Go Back")
                     }
                 }
@@ -76,7 +73,6 @@ fun CharacterDetailScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Imagen del personaje
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -91,8 +87,10 @@ fun CharacterDetailScreen(
                             .crossfade(true)
                             .build(),
                         contentDescription = character.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.clip(CircleShape)
+                        modifier = Modifier
+                            .size(192.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
                 }
 
@@ -103,7 +101,6 @@ fun CharacterDetailScreen(
                     modifier = Modifier.padding(8.dp)
                 )
 
-                // Detalles adicionales (Species, Status, Gender)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -121,15 +118,5 @@ fun CharacterDetailScreen(
                 }
             }
         }
-    }
-}
-
-// Preview para visualizar la pantalla
-@Preview
-@Composable
-fun PreviewCharacterDetail() {
-    RickAndMortyTheme {
-        val navController = rememberNavController()
-        CharacterDetailScreen(characterId = 1, onBackClick = { navController.popBackStack() })
     }
 }
