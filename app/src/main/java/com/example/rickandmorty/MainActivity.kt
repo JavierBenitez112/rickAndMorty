@@ -9,6 +9,7 @@ import Lab8.Characters.CharacterDestination
 import Lab8.Characters.LoginDestination
 import Lab8.Characters.characterScreen
 import Lab8.Characters.loginScreen
+import Lab9.BottomBar.BottomBarScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +21,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import android.util.Log
+import androidx.navigation.compose.composable
+import com.example.rickandmorty.ui.login.LoginScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,33 +34,25 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = LoginDestination,
+                        startDestination = "main",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        loginScreen(
-                            onLoginClick = {
-                                navController.navigate(CharacterDestination) {
-                                    popUpTo(LoginDestination) { inclusive = true }
+                        composable("main") {
+                            LoginScreen(onLoginClick = {
+                                navController.navigate("bottomBar") {
+                                    popUpTo("main") { inclusive = true }
                                 }
-                            }
-                        )
-                        characterScreen(
-                            onCharacterClick = { characterId ->
-                                navController.navigateToCharacterDetailsScreen(
-                                    destination = DetailDestination(
-                                        ID = characterId
-                                    )
-                                )
-                            },
-                            onBackToLogin = {
-                                navController.navigate(LoginDestination) {
-                                    popUpTo(CharacterDestination) { inclusive = true }
+                            })
+                        }
+                        composable("bottomBar") {
+                            BottomBarScreen(onLogoutClick = {
+                                navController.navigate("main") {
+                                    popUpTo(0)
                                 }
-                            }
-                        )
-                        DetailScreen(navController = navController)
+                            })
+                        }
                     }
                 }
             }
