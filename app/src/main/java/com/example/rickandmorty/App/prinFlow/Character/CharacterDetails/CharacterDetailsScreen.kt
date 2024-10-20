@@ -1,7 +1,6 @@
 package com.example.rickandmorty.App.prinFlow.Character.CharacterDetails
 
 import android.content.res.Configuration
-import com.example.rickandmorty.Datos.CharactersInfo.CharacterDb
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,19 +15,17 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-import com.example.rickandmorty.Datos.CharactersInfo.Character
+import com.example.rickandmorty.Datos.model.Characters
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.rickandmorty.App.ErrorScreen
-import com.example.rickandmorty.App.LoadingScreen
-import com.example.rickandmorty.App.prinFlow.Location.LocationDetails.LocationProfileViewModel
+import com.example.rickandmorty.App.comun.ErrorScreen
+import com.example.rickandmorty.App.comun.LoadingScreen
 import com.example.rickandmorty.App.theme.RickAndMortyTheme
 
 
@@ -103,7 +100,7 @@ fun CharacterDetailScreen(
 
 @Composable
 fun CharacterDetailContent(
-    character: Character?,
+    character: Characters?,
     isLoading: Boolean,
     hasError: Boolean,
     onRetryClick: () -> Unit,
@@ -198,7 +195,7 @@ fun PreviewCharacterProfileScreen() {
                 state = CharacterData(
                     IsLoading = false,
                     hasError = false,
-                    data = Character(
+                    data = Characters(
                         id = 2565,
                         name = "Rick",
                         status = "Alive",

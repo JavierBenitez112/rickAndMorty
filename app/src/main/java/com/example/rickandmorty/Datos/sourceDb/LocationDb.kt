@@ -1,3 +1,5 @@
+import com.example.rickandmorty.Datos.model.Location
+
 // import .....Location
 
 class LocationDb {

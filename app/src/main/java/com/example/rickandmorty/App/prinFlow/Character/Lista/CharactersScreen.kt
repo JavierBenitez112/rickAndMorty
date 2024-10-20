@@ -2,7 +2,7 @@ package com.example.rickandmorty.App.prinFlow.Character.Lista
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import com.example.rickandmorty.Datos.CharactersInfo.CharacterDb
+import com.example.rickandmorty.Datos.sourceDb.CharacterDb
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,14 +19,13 @@ import com.example.rickandmorty.App.theme.RickAndMortyTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.unit.dp
-import com.example.rickandmorty.Datos.CharactersInfo.Character
+import com.example.rickandmorty.Datos.model.Characters
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -35,54 +34,47 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.rickandmorty.App.ErrorScreen
-import com.example.rickandmorty.App.LoadingScreen
+import com.example.rickandmorty.App.comun.ErrorScreen
+import com.example.rickandmorty.App.comun.LoadingScreen
 
 
 @Composable
 fun CharacterRoute(
     onCharacterClick: (Int) -> Unit,
-    viewModel: CharacterViewModel = viewModel()
+    viewModel: CharacterViewModel = viewModel(factory = CharacterViewModel.Factory)
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.getCharacters()
-    }
 
-    val charactersState by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     CharacterScreen(
-        characters = charactersState.data,
-        isLoading = charactersState.isLoading,
-        hasError = charactersState.hasError,
-        onLoadingClick = { viewModel.onLoadingClick() },
+        state = state,
+        forceError = { viewModel.onEvent(CharactersEvent.ForceError) },
         onCharacterClick = onCharacterClick,
-        onRetryClick = { viewModel.onRetryClick() },
+        onRetryClick = { viewModel.onEvent(CharactersEvent.RetryClick) },
         modifier = Modifier.fillMaxSize()
     )
 }
 
 @Composable
 private fun CharacterScreen(
-    characters: List<Character>,
-    isLoading: Boolean,
-    hasError: Boolean,
-    onLoadingClick: () -> Unit,
-    onCharacterClick: (Int) -> Unit,
+    state: CharactersState,
+    forceError: () -> Unit,
     onRetryClick: () -> Unit,
+    onCharacterClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when {
-        isLoading -> {
+        state.isLoading -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable { onLoadingClick() },
+                    .clickable { forceError() },
                 contentAlignment = Alignment.Center
             ) {
                 LoadingScreen()
             }
         }
-        hasError -> {
+        state.hasError -> {
             ErrorScreen(
                 onRetry = onRetryClick,
                 errorMessage = "Error al cargar la lista de personajes"
@@ -90,14 +82,14 @@ private fun CharacterScreen(
             )
         }
         else -> {
-            CharacterListScreen(characters, onCharacterClick, modifier)
+            CharacterListScreen(state.data, onCharacterClick, modifier)
         }
     }
 }
 
 @Composable
 private fun CharacterListScreen(
-    characters: List<Character>,
+    characters: List<Characters>,
     onCharacterClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -117,7 +109,7 @@ private fun CharacterListScreen(
 
 @Composable
 private fun CharacterItem(
-    character: Character,
+    character: Characters,
     modifier: Modifier = Modifier
 ) {
     val imageBackgroundColors = listOf(

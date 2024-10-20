@@ -1,9 +1,9 @@
 package com.example.rickandmorty.App.prinFlow.Character.Lista
 
-import com.example.rickandmorty.Datos.CharactersInfo.Character
+import com.example.rickandmorty.Datos.model.Characters
 
 data class CharactersState(
-    val data: List<Character> = emptyList(),
-    val isLoading: Boolean = false,
+    val data: List<Characters> = emptyList(),
+    val isLoading: Boolean = true,
     val hasError: Boolean = false
 )

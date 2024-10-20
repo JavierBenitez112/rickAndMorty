@@ -1,7 +1,7 @@
 package com.example.rickandmorty.App.prinFlow.Location.Locations
 
-import Location
-import LocationDb
+import com.example.rickandmorty.Datos.model.Location
+
 
 data class LocationsState(
     val data: List<Location> = emptyList(),

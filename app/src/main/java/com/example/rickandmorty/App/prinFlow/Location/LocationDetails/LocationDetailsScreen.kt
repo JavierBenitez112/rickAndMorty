@@ -6,18 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-import Location
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.rickandmorty.App.theme.RickAndMortyTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.rickandmorty.App.ErrorScreen
-import com.example.rickandmorty.App.LoadingScreen
+import com.example.rickandmorty.App.comun.ErrorScreen
+import com.example.rickandmorty.App.comun.LoadingScreen
+import com.example.rickandmorty.Datos.model.Location
 
 @Composable
 fun LocationProfileRoute(

@@ -1,13 +1,15 @@
 package com.example.rickandmorty.App.prinFlow.Location.Locations
 
-import Location
 import LocationDb
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.rickandmorty.Datos.repository.LocalLocationRepository
+import com.example.rickandmorty.domain.repository.LocationRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,54 +18,61 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LocationsViewModel(
-    savedStateHandle: SavedStateHandle
+    private val locationRepository: LocationRepository
 ): ViewModel() {
-    private val locationDb = LocationDb()
-    private val _uiState: MutableStateFlow<LocationsState> = MutableStateFlow(
-        LocationsState()
-    )
-    val uiState = _uiState.asStateFlow()
+    private var getDataJob: Job? = null
+    private var _state = MutableStateFlow(LocationsState())
+    val state = _state.asStateFlow()
 
-    fun getListLocations(){
-        viewModelScope.launch {
+    init {
+        getLocations()
+    }
 
-            _uiState.update { state ->
+    fun onEvent(event: LocationListEvent) {
+        when (event) {
+            LocationListEvent.ForceError -> {
+                getDataJob?.cancel()
+                _state.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        hasError = true
+                    )
+                }
+            }
+            LocationListEvent.RetryClick -> {
+                getLocations()
+            }
+        }
+    }
+
+    private fun getLocations() {
+        getDataJob = viewModelScope.launch {
+            _state.update { state ->
                 state.copy(
-                    isLoading = true
+                    isLoading = true,
+                    hasError = false
                 )
             }
 
+            val locations = locationRepository.getLocations()
 
-            delay(4000)
-
-
-            val locations = locationDb.getAllLocations()
-
-
-            _uiState.update { state ->
+            _state.update { state ->
                 state.copy(
-                    data = locations,
                     isLoading = false,
+                    data = locations
                 )
             }
         }
     }
 
-    fun onLoadingClick() {
-        _uiState.update { state ->
-            state.copy(
-                isLoading = false,
-                hasError = true
-            )
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                LocationsViewModel(
+                    locationRepository = LocalLocationRepository()
+                )
+            }
         }
     }
-    fun onRetryClick() {
-        _uiState.update { state ->
-            state.copy(
-                isLoading = true,
-                hasError = false
-            )
-        }
-        getListLocations()
-    }
+
 }

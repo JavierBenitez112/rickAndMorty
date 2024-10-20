@@ -1,6 +1,6 @@
-package com.example.rickandmorty.Datos.CharactersInfo
+package com.example.rickandmorty.Datos.model
 
-data class Character(
+data class Characters(
     val id: Int,
     val name: String,
     val status: String,

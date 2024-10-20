@@ -1,4 +1,4 @@
-package com.example.rickandmorty.App
+package com.example.rickandmorty.App.comun
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

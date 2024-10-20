@@ -1,6 +1,7 @@
 package com.example.rickandmorty.App.prinFlow.Location.LocationDetails
 
-import Location
+import com.example.rickandmorty.Datos.model.Location
+
 
 data class LocationProfileState(
     val data: Location? = null,

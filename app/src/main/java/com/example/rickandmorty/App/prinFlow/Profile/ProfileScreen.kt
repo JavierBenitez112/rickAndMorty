@@ -1,6 +1,7 @@
 package com.example.rickandmorty.App.prinFlow.Profile
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -23,10 +24,11 @@ fun ProfileRoute(
     onLogOutClick: () -> Unit
 ) {
     ProfileScreen(
-        onLogOutClick = onLogOutClick
+        onLogOutClick = {
+            onLogOutClick()
+        }
     )
 }
-
 @Composable
 fun ProfileScreen(
     onLogOutClick: () -> Unit,
@@ -93,16 +95,8 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Botón de cerrar sesión
-        Button(
-            onClick = { onLogOutClick },
-            modifier = Modifier.clip(CircleShape),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-        ) {
-            Text(text = "Cerrar sesión")
+        OutlinedButton(onClick = onLogOutClick) {
+            Text("Cerrar sesión")
         }
     }
 }
