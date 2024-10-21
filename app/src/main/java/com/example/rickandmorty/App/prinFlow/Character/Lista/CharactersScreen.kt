@@ -2,7 +2,7 @@ package com.example.rickandmorty.App.prinFlow.Character.Lista
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import com.example.rickandmorty.Datos.sourceDb.CharacterDb
+import com.example.rickandmorty.Datos.localDb.sourceDb.CharacterDb
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

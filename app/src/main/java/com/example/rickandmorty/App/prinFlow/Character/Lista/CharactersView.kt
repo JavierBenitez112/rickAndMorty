@@ -2,9 +2,11 @@ package com.example.rickandmorty.App.prinFlow.Character.Lista
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.rickandmorty.Datos.di.Dependencies
 import com.example.rickandmorty.Datos.repository.LocalCharacterRepository
 import com.example.rickandmorty.domain.repository.CharacterRepository
 import kotlinx.coroutines.Job
@@ -40,11 +42,16 @@ class CharacterViewModel(
             CharactersEvent.RetryClick -> {
                 getCharacters()
             }
+            CharactersEvent.PopulateDatabase -> {
+                populateDatabase()
+            }
         }
     }
 
     private fun getCharacters() {
         getDataJob = viewModelScope.launch {
+            characterRepository.populateLocalCharacterDatabase()
+
             _state.update { state ->
                 state.copy(
                     isLoading = true,
@@ -63,11 +70,38 @@ class CharacterViewModel(
         }
     }
 
+    private fun populateDatabase() {
+        viewModelScope.launch {
+            _state.update { state ->
+                state.copy(
+                    isLoading = true,
+                    hasError = false
+                )
+            }
+
+            try {
+                characterRepository.populateLocalCharacterDatabase()
+                getCharacters()
+            } catch (e: Exception) {
+                _state.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        hasError = true
+                    )
+                }
+            }
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
+                val application = checkNotNull(this[APPLICATION_KEY])
+                val db = Dependencies.provideDatabase(application)
                 CharacterViewModel(
-                    characterRepository = LocalCharacterRepository()
+                    characterRepository = LocalCharacterRepository(
+                        characterDao = db.characterDao()
+                    )
                 )
             }
         }

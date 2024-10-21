@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KFunction0
 
 @Serializable
 data object MainNavigationGraph
@@ -15,7 +16,7 @@ fun NavController.navigateToMainGraph(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.mainNavigationGraph(
-    onLogOutClick: () -> Unit,
+    onLogOutClick: KFunction0<Unit>,
 ) {
     composable<MainNavigationGraph> {
         val nestedNavController = rememberNavController()

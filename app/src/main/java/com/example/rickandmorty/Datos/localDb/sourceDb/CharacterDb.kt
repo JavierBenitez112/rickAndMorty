@@ -1,4 +1,4 @@
-package com.example.rickandmorty.Datos.sourceDb
+package com.example.rickandmorty.Datos.localDb.sourceDb
 
 import com.example.rickandmorty.Datos.model.Characters
 

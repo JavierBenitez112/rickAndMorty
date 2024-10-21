@@ -30,8 +30,9 @@ import com.example.rickandmorty.App.prinFlow.Profile.profileScreen
 @Composable
 fun MainFlowScreen(
     onLogOutClick: () -> Unit,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
+
     var bottomBarVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -101,7 +102,9 @@ fun MainFlowScreen(
         NavHost(
             navController = navController,
             startDestination = CharacterNavGraph,
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             characterGraph(navController)
             locationsGraph(navController)
@@ -109,5 +112,6 @@ fun MainFlowScreen(
                 onLogoutClick = onLogOutClick
             )
         }
+
     }
 }

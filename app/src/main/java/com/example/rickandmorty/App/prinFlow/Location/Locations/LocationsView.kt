@@ -1,27 +1,27 @@
 package com.example.rickandmorty.App.prinFlow.Location.Locations
 
-import LocationDb
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.rickandmorty.Datos.di.Dependencies
 import com.example.rickandmorty.Datos.repository.LocalLocationRepository
-import com.example.rickandmorty.domain.repository.LocationRepository
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 import kotlinx.coroutines.launch
 
+
 class LocationsViewModel(
-    private val locationRepository: LocationRepository
-): ViewModel() {
+    private val locationRepository: LocalLocationRepository
+) : ViewModel() {
+
     private var getDataJob: Job? = null
-    private var _state = MutableStateFlow(LocationsState())
+    private val _state = MutableStateFlow(LocationsState())
     val state = _state.asStateFlow()
 
     init {
@@ -42,11 +42,16 @@ class LocationsViewModel(
             LocationListEvent.RetryClick -> {
                 getLocations()
             }
+            LocationListEvent.PopulateDatabase -> {
+                populateDatabase()
+            }
         }
     }
 
     private fun getLocations() {
         getDataJob = viewModelScope.launch {
+            locationRepository.populateLocalLocationDatabase()
+
             _state.update { state ->
                 state.copy(
                     isLoading = true,
@@ -65,14 +70,40 @@ class LocationsViewModel(
         }
     }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                LocationsViewModel(
-                    locationRepository = LocalLocationRepository()
+    private fun populateDatabase() {
+        viewModelScope.launch {
+            _state.update { state ->
+                state.copy(
+                    isLoading = true,
+                    hasError = false
                 )
+            }
+
+            try {
+                locationRepository.populateLocalLocationDatabase()
+                getLocations()
+            } catch (e: Exception) {
+                _state.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        hasError = true
+                    )
+                }
             }
         }
     }
 
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = checkNotNull(this[APPLICATION_KEY])
+                val db = Dependencies.provideDatabase(application)
+                LocationsViewModel(
+                    locationRepository = LocalLocationRepository(
+                        locationDao = db.locationDao()
+                    )
+                )
+            }
+        }
+    }
 }

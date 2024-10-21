@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,23 +17,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.rickandmorty.App.Login.LoginEvent
+import com.example.rickandmorty.App.Login.LoginViewModel
 import com.example.rickandmorty.App.theme.RickAndMortyTheme
 
 @Composable
 fun ProfileRoute(
-    onLogOutClick: () -> Unit
+    onLogOutClick: () -> Unit,
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ) {
+    val userNameState by viewModel.userNameState.collectAsStateWithLifecycle()
+
     ProfileScreen(
         onLogOutClick = {
+            viewModel.onEvent(LoginEvent.DeleteName)
             onLogOutClick()
-        }
+        },
+        userNameState = userNameState
     )
 }
 @Composable
 fun ProfileScreen(
     onLogOutClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    userNameState: String?
 ) {
     Column(
         modifier = modifier
@@ -67,7 +78,7 @@ fun ProfileScreen(
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Javier Andre Benitez Garcia",
+                    text = if (userNameState != null && userNameState != "") userNameState else "Unknown",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -105,10 +116,11 @@ fun ProfileScreen(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewProfileScreen() {
-    RickAndMortyTheme() {
+    RickAndMortyTheme {
         Surface {
             ProfileScreen(
                 onLogOutClick = { /*TODO*/ },
+                userNameState = "Preview User",
                 modifier = Modifier.fillMaxSize()
             )
         }
