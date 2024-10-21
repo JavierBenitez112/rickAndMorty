@@ -85,6 +85,9 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    implementation(libs.androidx.splashscreen)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
