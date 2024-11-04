@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.rickandmorty.Datos.di.Dependencies
+import com.example.rickandmorty.Datos.network.KtorRickApi
 import com.example.rickandmorty.Datos.repository.LocalCharacterRepository
-import com.example.rickandmorty.domain.repository.CharacterRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 
 class CharacterViewModel(
-    private val characterRepository: CharacterRepository
+    private val characterRepository: LocalCharacterRepository
 ) : ViewModel() {
 
     private var getDataJob: Job? = null
@@ -80,7 +80,7 @@ class CharacterViewModel(
             }
 
             try {
-                characterRepository.populateLocalCharacterDatabase()
+                characterRepository.populateOnlineCharacterDatabase()
                 getCharacters()
             } catch (e: Exception) {
                 _state.update { state ->
@@ -98,9 +98,11 @@ class CharacterViewModel(
             initializer {
                 val application = checkNotNull(this[APPLICATION_KEY])
                 val db = Dependencies.provideDatabase(application)
+                val api = KtorRickApi()
                 CharacterViewModel(
                     characterRepository = LocalCharacterRepository(
-                        characterDao = db.characterDao()
+                        characterDao = db.characterDao(),
+                        api = api
                     )
                 )
             }

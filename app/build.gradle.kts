@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.credentials)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
@@ -97,5 +98,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Ktor
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.coil)
 
 }

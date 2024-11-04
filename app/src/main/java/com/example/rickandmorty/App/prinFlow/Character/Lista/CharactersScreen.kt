@@ -82,7 +82,7 @@ private fun CharacterScreen(
             )
         }
         else -> {
-            CharacterListScreen(state.data, onCharacterClick, modifier)
+            CharacterListScreen(state.data.take(20), onCharacterClick, modifier)
         }
     }
 }

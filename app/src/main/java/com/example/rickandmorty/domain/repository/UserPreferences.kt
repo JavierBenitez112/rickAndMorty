@@ -9,6 +9,4 @@ interface UserPreferences {
     suspend fun getValue(key: String): String?
     fun getUserName(): Flow<String>
     fun authStatus(): Flow<Boolean>
-
-
 }

@@ -10,7 +10,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.10.00"
-navigationCompose = "2.8.0-rc01"
+navigationCompose = "2.8.3"
 kotlinSerialization = "1.6.3"
 navigationRuntimeKtx = "2.8.3"
 navigationComposeVersion = "2.8.3"
@@ -18,6 +18,9 @@ dataStore = "1.1.1"
 runtimeLivedata = "1.7.4"
 room = "2.6.1"
 splashScreen = "1.0.1"
+ktor = "2.3.12"
+coil = "3.0.0-rc01"
+credentials = "1.3.0"
 
 
 [libraries]
@@ -49,9 +52,34 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 
+#Esto con Ktor
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
+
+# Ktor
+ktor-client-cio = { group = "io.ktor", name="ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name="ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { group = "io.ktor", name="ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name="ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name="ktor-serialization-kotlinx-json", version.ref = "ktor" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
+#Ktor
+[bundles]
+ktor = [
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-serialization-kotlinx-json"
+]
+coil = [
+    "coil-compose",
+    "coil-network"
+]
