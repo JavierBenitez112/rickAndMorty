@@ -23,7 +23,7 @@ fun ErrorScreen(errorMessage: String, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Icono de advertencia
+
         Box(
             modifier = Modifier
                 .size(64.dp)
